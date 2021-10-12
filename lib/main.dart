@@ -365,38 +365,66 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  //페이지 구성
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: list(), //리스트 출력
+  Future<bool> _onBackPressed() async{
+
+    final result = await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("끝내시겠습니까?"),
+          actions: <Widget>[
+            FlatButton(
+              child: Text("Yes"),
+              onPressed: () => Navigator.of(context).pop(true),
             ),
-            Container(
-              child: Row(
-                children: <Widget>[
-                  RaisedButton( //scan 버튼
-                    onPressed: scan,
-                    child: Icon(_isScanning?Icons.stop:Icons.bluetooth_searching),
-                  ),
-                  SizedBox(width: 10,),
-                  Text("State : "), Text(_statusText), //상태 정보 표시
-                ],
-              ),
+            FlatButton(
+              child: Text("No"),
+              onPressed: () => Navigator.of(context).pop(false),
             ),
           ],
         ),
-      ),
+      );
+      return result ?? false;
+  }
+
+  //페이지 구성
+  @override
+  Widget build(BuildContext context) {
+    return new WillPopScope(
+        onWillPop: _onBackPressed,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(widget.title),
+          ),
+          body: Center(
+
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: list(), //리스트 출력
+                ),
+                Container(
+                  child: Row(
+                    children: <Widget>[
+                      RaisedButton( //scan 버튼
+                        onPressed: scan,
+                        child: Icon(_isScanning?Icons.stop:Icons.bluetooth_searching),
+                      ),
+                      SizedBox(width: 10,),
+                      Text("State : "), Text(_statusText), //상태 정보 표시
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
     );
   }
 }
+
+
+
 
 //BLE 장치 정보 저장 클래스
 class BleDeviceItem {
