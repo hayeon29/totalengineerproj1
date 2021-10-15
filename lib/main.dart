@@ -155,6 +155,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(MyApp());
@@ -365,25 +366,23 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<bool> _onBackPressed() async{
-
-    final result = await showDialog(
+  Future<bool> _onBackPressed(){
+    return showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("끝내시겠습니까?"),
+          title: Text("Do you want to exit the app?"),
           actions: <Widget>[
             FlatButton(
-              child: Text("Yes"),
-              onPressed: () => Navigator.of(context).pop(true),
+              child: Text("NO"),
+              onPressed: ()=>Navigator.pop(context, false),
             ),
             FlatButton(
-              child: Text("No"),
-              onPressed: () => Navigator.of(context).pop(false),
-            ),
+              child: Text("YES"),
+              onPressed: ()=>SystemNavigator.pop() ,
+            )
           ],
-        ),
-      );
-      return result ?? false;
+        )
+    ).then((value) => value ?? false);
   }
 
   //페이지 구성

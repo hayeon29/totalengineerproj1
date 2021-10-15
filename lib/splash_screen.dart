@@ -35,7 +35,9 @@ class _splashScreenStartState extends State<splashScreenStart> {
 
   void _init() async{
     //데이터 불러오기 작업 수행
-    Navigator.push( context, MaterialPageRoute(builder: (context) => MyApp()));
+    Future.delayed(
+        Duration.zero,
+            () => Navigator.push( context, MaterialPageRoute(builder: (context) => MyHomePage(title: 'Smart Alarm',))));
   }
 
 
