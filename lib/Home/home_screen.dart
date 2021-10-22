@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 //import 'package:flutter_ble_lib/flutter_ble_lib.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:smart_alarm/Home/realtime_graph_screen.dart';
 
 import '../main.dart';
+import 'ble_settings_screen.dart';
 
 //
 // class HomeScreen extends StatefulWidget {
@@ -384,9 +386,19 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget trailing(ScanResult r) {
+    return IconButton(
+      icon: Icon(Icons.settings),
+      onPressed: () {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => BleSettings()));
+      },
+      );
+  }
+
   /* 장치 아이템을 탭 했을때 호출 되는 함수 */
   void onTap(ScanResult r) {
     // 단순히 이름만 출력
+    Navigator.push(context, MaterialPageRoute(builder: (context) => RealtimeGraph() ));
     print('${r.device.name}');
   }
 
@@ -397,7 +409,8 @@ class _HomeScreenState extends State<HomeScreen> {
       leading: leading(r),
       title: deviceName(r),
       subtitle: deviceMacAddress(r),
-      trailing: deviceSignal(r),
+      //trailing: deviceSignal(r),
+      trailing: trailing(r),
     );
   }
 
@@ -417,6 +430,7 @@ class _HomeScreenState extends State<HomeScreen> {
           separatorBuilder: (BuildContext context, int index) {
             return Divider();
           },
+
         ),
       ),
       /* 장치 검색 or 검색 중지  */
