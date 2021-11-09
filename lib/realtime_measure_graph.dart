@@ -51,7 +51,7 @@ class _graphMeasureStartState extends State<graphMeasureStart> {
   @override
   Widget build(BuildContext context) {
     String _startMinute = formatDate(DateTime.now(), [hh, ':', getStartMinuteString(), ':00']);
-    String _endMinute = formatDate(DateTime.now(), [hh, ':', getEndMinuteString(), ':00']);
+    String _endMinute = formatDate(DateTime.now().add(const Duration(minutes: 5)), [hh, ':', getEndMinuteString(), ':00']);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
