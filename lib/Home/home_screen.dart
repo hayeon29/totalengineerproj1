@@ -307,6 +307,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<ScanResult> scanResultList = [];
   bool _isScanning = false;
 
+
+
   @override
   initState() {
     super.initState();

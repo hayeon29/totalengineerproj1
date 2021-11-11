@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,19 +11,19 @@ class StartApp extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: splashScreenStart(),
+      home: SplashScreenStart(),
     );
   }
 }
 
-class splashScreenStart extends StatefulWidget {
-  const splashScreenStart({Key? key}) : super(key: key);
+class SplashScreenStart extends StatefulWidget {
+  const SplashScreenStart({Key? key}) : super(key: key);
 
   @override
-  _splashScreenStartState createState() => _splashScreenStartState();
+  _SplashScreenStartState createState() => _SplashScreenStartState();
 }
 
-class _splashScreenStartState extends State<splashScreenStart> {
+class _SplashScreenStartState extends State<SplashScreenStart> {
 
   @override
   initState(){

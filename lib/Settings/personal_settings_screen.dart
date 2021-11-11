@@ -203,7 +203,16 @@ class _PersonalSettingsState extends State<PersonalSettings> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('개인정보 설정')),
+      appBar: AppBar(
+        title: Text('개인정보 설정'),
+        leading: IconButton(
+          onPressed: () {
+            _setPersonalSettings();
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back),
+        ),
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
