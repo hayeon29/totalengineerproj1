@@ -1,7 +1,11 @@
+import 'dart:async';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:smart_alarm/widget/line_chart_widget.dart' as linechart;
+import 'package:date_format/date_format.dart';
+import 'package:smart_alarm/widget/bar_chart_widget.dart' as barchart;
+import 'package:intl/intl.dart';
 
 class RealtimeGraph extends StatefulWidget {
   const RealtimeGraph({Key? key}) : super(key: key);
@@ -11,6 +15,7 @@ class RealtimeGraph extends StatefulWidget {
 }
 
 class _RealtimeGraphState extends State<RealtimeGraph> {
+
   int bpm = 10;
   int apnea = 1;
 
@@ -19,54 +24,222 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
     const Color(0xff072063),
   ];
 
+
+  late Timer _timer;
+  String _startTime = DateTime.now().second <= 30 ?
+  formatDate(DateTime.now(), [hh, ':', nn, ':00',]) : formatDate(DateTime.now(), [hh, ':', nn, ':30',]);
+  String _endTime = DateTime.now().second <= 30 ?
+  formatDate(DateTime.now(), [hh, ':', nn, ':30',]) :
+  formatDate(DateTime.now().add(const Duration(minutes: 1)), [hh, ':', nn, ':00',]);
+
+  static double timeCount = 0;
+  static double totalTimeCount = 0;
+  String oneMinuteBreathAvg = "0";
+  String apneaCount = "0";
+
+  @override
+  initState(){
+
+    super.initState();
+    _getTime();
+  }
+
   @override
   Widget build(BuildContext context) {
+    String _startMinute = formatDate(DateTime.now(), [hh, ':', getStartMinuteString(), ':00']);
+    String _endMinute = formatDate(DateTime.now().add(const Duration(minutes: 5)), [hh, ':', getEndMinuteString(), ':00']);
     return Scaffold(
-      //backgroundColor: Color.fromARGB(255, 3, 30, 97),
-      //TODO: 테마색 입힐것
+
       appBar: AppBar(
-        title: const Text('실시간 그래프')
-      ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            Container( // 실시간 센서값
-              padding: EdgeInsets.all(20), //TODO: 이거 안먹히는 이유??
-              height: 500,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Color.fromARGB(255, 3, 30, 97))
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(8.0),
-                child: LineChart(sampleData()),
-              )
-
-            ),
-        
-            Container( // 실시간 센서값
-              padding: EdgeInsets.all(20),
-              height: 500,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Color.fromARGB(255, 3, 30, 97))
-              ),
-
-            ),
-
-            ListTile( // 기타 데이터
-              title: Text('평균 1분당 호흡 횟수'),
-              trailing: Text('$bpm회/m')
-            ),
-
-            ListTile( // 기타 데이터
-              title: Text('무호흡 감지 횟수'),
-              trailing: Text('$apnea회'),
-            ),
-
-          ],
+        leading: BackButton(
+            color: Colors.white
         ),
+        title: Text("실시간 측정 그래프"),
+        backgroundColor: const Color(0xff012061),
+        elevation: 0.0,
+      ),
+      body: ListView(
+        children: [
+
+          Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      const Color(0xff012061),
+                      const Color(0xff7030A0),
+                    ],
+                  )
+              ),
+              child: Column(
+                children: <Widget>[
+                  AspectRatio(
+                    aspectRatio: 3/2,
+                    child:Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(32),
+                      ),
+                      color: const Color(0xffffffff),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child:linechart.LineChartWidget() ,
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment:  MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Text(
+                          '$_startTime',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          '$_endTime',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 50,
+                    child: Container(color: Colors.transparent),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 10),
+                      child: Text(
+                        '실시간 호흡 수 그래프',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  AspectRatio(
+                    aspectRatio: 3/2,
+                    child:Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(32),
+                      ),
+                      color: const Color(0xffffffff),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child:barchart.BarChartWidget(),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment:  MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Text(
+                          '$_startMinute',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          '$_endMinute',
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 70,
+                    child: Container(color: Colors.transparent),
+                  ),
+                  Row(
+                    mainAxisAlignment:  MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Text(
+                          '평균 1분당 호흡 횟수',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          '$oneMinuteBreathAvg' + '회/m',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 10,
+                    child: Container(color: Colors.transparent),
+                  ),
+                  Row(
+                    mainAxisAlignment:  MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Text(
+                          '무호흡 감지 횟수',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: Text(
+                          '$apneaCount' + '회',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )
+          ),
+        ],
       ),
     );
   }
@@ -172,4 +345,30 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
       ],
     );
   }
+
+  void _getTime() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if(DateTime.now().second % 30 == 0){
+        setState((){
+          _startTime = formatDate(DateTime.now(), [hh, ':', nn, ':', ss,]);
+          _endTime = formatDate(DateTime.now().add(const Duration(seconds: 30)), [hh, ':', nn, ':', ss,]);
+        });
+        totalTimeCount = 0;
+        timeCount = 0;
+      }
+    });
+  }
+
+  String getStartMinuteString() {
+    var f = NumberFormat('00');
+    return f.format((5 * (DateTime.now().minute ~/ 5))).toString();
+  }
+
+  String getEndMinuteString() {
+    var f = NumberFormat('00');
+    return f.format((5 * (DateTime.now().add(const Duration(minutes: 5)).minute ~/ 5))).toString();
+  }
 }
+
+
+

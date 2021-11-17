@@ -417,8 +417,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: Text('블루투스 연결'),
       ),
@@ -442,5 +441,4 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Icon(_isScanning ? Icons.stop : Icons.search),
       ),
     );
-  }
 }
