@@ -213,152 +213,115 @@ class _PersonalSettingsState extends State<PersonalSettings> {
           icon: Icon(Icons.arrow_back),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+
+      body: ListView(
         children: <Widget>[
-          Text('생년월일'),
-          Row(
-            children: <Widget>[
-              Container(
-                width: 100,
-                child: DropdownButtonFormField(
-                  value: _selectedYear,
-                  items: _yearList.map(
-                    (value) {
-                      return DropdownMenuItem(
-                        value: value,
-                        child: Text(value),
-                      );
+          ListTile(
+            dense: true,
+            contentPadding: EdgeInsets.all(30),
+            title: Text('생년월일'),
+            subtitle: Row(
+              children: <Widget>[
+                Container(
+                  width: 100,
+                  child: DropdownButtonFormField(
+                    menuMaxHeight: 300.0,
+                    value: _selectedYear,
+                    items: _yearList.map(
+                          (value) {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedYear = value.toString();
+                      });
                     },
-                  ).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedYear = value.toString();
-                    });
-                  },
+                  ),
                 ),
-              ),
-              Container(
-                width: 100,
-                child: DropdownButtonFormField(
-                  value: _selectedMonth,
-                  items: _monthList.map(
-                    (value) {
-                      return DropdownMenuItem(
-                        value: value,
-                        child: Text(value),
-                      );
+                Container(
+                  width: 100,
+                  child: DropdownButtonFormField(
+                    menuMaxHeight: 300.0,
+                    value: _selectedMonth,
+                    items: _monthList.map(
+                          (value) {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedMonth = value.toString();
+                      });
                     },
-                  ).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedMonth = value.toString();
-                    });
-                  },
+                  ),
                 ),
-              ),
-              Container(
-                width: 100,
-                child: DropdownButtonFormField(
-                  value: _selectedDate,
-                  items: _dateList.map(
-                    (value) {
-                      return DropdownMenuItem(
-                        value: value,
-                        child: Text(value),
-                      );
+                Container(
+                  width: 100,
+                  child: DropdownButtonFormField(
+                    menuMaxHeight: 300.0,
+                    value: _selectedDate,
+                    items: _dateList.map(
+                          (value) {
+                        return DropdownMenuItem(
+                          value: value,
+                          child: Text(value),
+                        );
+                      },
+                    ).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedDate = value.toString();
+                      });
                     },
-                  ).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedDate = value.toString();
-                    });
-                  },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-          Text('성별'),
-          Row(
-            children: <Widget>[
-              Container(
-                width: 150,
-                child: RadioListTile(
-                  title: Text('남성'),
-                  value: Gender.Man,
-                  groupValue: _gender,
-                  onChanged: (value) {
-                    setState(() {
-                      _gender = Gender.Man;
-                    });
-                  },
-                ),
-              ),
-              Container(
+          ListTile(
+            dense:true,
+            contentPadding: EdgeInsets.all(30),
+
+            title: Text('성별'),
+            subtitle: Row(
+              children: <Widget>[
+                Container(
                   width: 150,
                   child: RadioListTile(
-                      title: Text('여성'),
-                      value: Gender.Woman,
-                      groupValue: _gender,
-                      onChanged: (value) {
-                        setState(() {
-                          _gender = Gender.Woman;
-                        });
-                      })
-              ),
-            ],
-          ),
-          Text('gender: $_gender, Birth: $_selectedDate - $_selectedMonth - $_selectedYear')
-        ],
-      ),
-      /*
-      body: Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Column(
-          children: <Widget>[
-            Text('생년월일'),
-                DropdownButtonFormField(
-                  value: _selectedValue,
-                  items: _valueList.map(
-                        (value) {
-                      return DropdownMenuItem(
-                        value: value,
-                        child: Text(value),
-                      );
+                    title: Text('남성'),
+                    value: Gender.Man,
+                    groupValue: _gender,
+                    onChanged: (value) {
+                      setState(() {
+                        _gender = Gender.Man;
+                      });
                     },
-                  ).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedValue = value.toString();
-                    });
-                  },
+                  ),
                 ),
-
-            Text('성별'),
-            RadioListTile(
-              title:Text('남성'),
-              value: Gender.Man,
-              groupValue: _gender,
-              onChanged: (value) {
-                  setState(() {
-                    _gender = Gender.Man;
-                  });
-              },
+                Container(
+                    width: 150,
+                    child: RadioListTile(
+                        title: Text('여성'),
+                        value: Gender.Woman,
+                        groupValue: _gender,
+                        onChanged: (value) {
+                          setState(() {
+                            _gender = Gender.Woman;
+                          });
+                        })
+                ),
+              ],
             ),
-            RadioListTile(
-                title:Text('여성'),
-                value: Gender.Woman,
-                groupValue: _gender,
-                onChanged: (value) {
-                  setState(() {
-                    _gender = Gender.Woman;
-                  });
-                })
-
-          ],
-        )
+          )
+        ],
       )
-        */
     );
   }
 }

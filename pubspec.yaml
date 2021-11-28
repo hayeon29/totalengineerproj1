@@ -38,6 +38,9 @@ dependencies:
   table_calendar: ^3.0.0
   path_provider: ^2.0.0
   path: ^1.8.0
+  dcdg: ^4.0.0
+  fluttertoast: ^8.0.8
+
 
 dev_dependencies:
   flutter_test:
