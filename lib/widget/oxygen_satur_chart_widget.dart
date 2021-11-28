@@ -7,6 +7,9 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:smart_alarm/data/bar_chart_data.dart';
 
 class LineChartWidget extends StatefulWidget {
+  final int count;
+
+  const LineChartWidget({Key? key, required this.count}) : super(key: key);
   @override
   LineChartWidgetState createState() => LineChartWidgetState();
 }
@@ -112,7 +115,7 @@ class LineChartWidgetState extends State<LineChartWidget>{
         _endTime = formatDate(DateTime.now().add(const Duration(seconds: 30)), [hh, ':', nn, ':', ss,]);
       });
     }
-    chartData.add(GraphData(time, (Random().nextInt(50))+50));
+    chartData.add(GraphData(time, widget.count));
     _chartSeriesController.updateDataSource(
         addedDataIndex: time
     );

@@ -32,6 +32,36 @@ class PieGraphData{
   final Color? color;
 }
 
-List<int> barData = [
+class SensorData{
+  List<GraphData> oxygenData = [];
+  List<GraphData> heartData = [];
+  List<GraphData> soundData = [];
+
+  void addData(int value1, int value2, int value3){
+    int chartTime = DateTime.now().second % 30;
+    oxygenData.add(GraphData(chartTime, value1));
+    heartData.add(GraphData(chartTime, value2));
+    soundData.add(GraphData(chartTime, value3));
+  }
+
+  void deleteAllData(){
+    oxygenData.clear();
+    heartData.clear();
+    soundData.clear();
+  }
+}
+List<GraphData> oxygenData = [
 
 ];
+
+List<GraphData> heartData = [
+
+];
+
+List<GraphData> soundData = [
+
+];
+
+int time = DateTime.now().second % 30;
+
+SensorData data1 = SensorData();

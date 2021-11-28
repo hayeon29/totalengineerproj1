@@ -1,6 +1,9 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_alarm/widget/oxygen_satur_chart_widget.dart' as linechart;
+import 'package:smart_alarm/widget/oxygen_satur_chart_widget.dart' as oxygenChart;
 import 'package:smart_alarm/widget/heart_rate_chart_widget.dart' as HeartRateChart;
 import 'package:smart_alarm/widget/sound_chart_widget.dart' as SoundChart;
 
@@ -27,11 +30,16 @@ class RealtimeGraph extends StatefulWidget {
 
 class _RealtimeGraphState extends State<RealtimeGraph> {
 
+  StreamController<int> streamController = StreamController<int>();
+  StreamController<int> streamController1 = StreamController<int>();
+  StreamController<int> streamController2 = StreamController<int>();
+
   String oneMinuteBreathAvg = "0";
   String apneaCount = "0";
 
   @override
   initState(){
+    Timer.periodic(const Duration(seconds: 1), updateDataSource);
     super.initState();
   }
 
@@ -85,7 +93,16 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                       color: const Color(0xffffffff),
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16),
-                        child:HeartRateChart.HeartRateChartWidget(),
+                        child: StreamBuilder<int>(
+                            stream: streamController.stream,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return oxygenChart.LineChartWidget(count: snapshot.data!);
+                              } else {
+                                return CircularProgressIndicator();
+                              }
+                            },
+                        ),
                       ),
                     ),
                   ),
@@ -116,7 +133,16 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                       color: const Color(0xffffffff),
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16),
-                        child:linechart.LineChartWidget() ,
+                        child: StreamBuilder<int>(
+                            stream: streamController1.stream,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return HeartRateChart.HeartRateChartWidget(count: snapshot.data!);
+                              } else {
+                                return CircularProgressIndicator();
+                              }
+                            },
+                        ),
                       ),
                     ),
                   ),
@@ -147,7 +173,16 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                       color: const Color(0xffffffff),
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16),
-                        child:SoundChart.SoundChartWidget() ,
+                        child: StreamBuilder<int>(
+                          stream: streamController2.stream,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return SoundChart.SoundChartWidget(count: snapshot.data!);
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -192,8 +227,28 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
       ),
     );
   }
-}
 
+  void updateDataSource(Timer timer) {
+    int chartTime = DateTime.now().second % 30;
+    streamController.add(Random().nextInt(50) + 50);
+    streamController1.add(Random().nextInt(50) + 50);
+    streamController2.add(Random().nextInt(50) + 50);
+    //if(isApnea = true 라면){
+    //  record_data 리스트에 센서에서 받아온 값을 넣음
+    //  List.add(value1, value2, value3);
+    //  if(무호흡에서 벗어났다고 생각하면){
+    //    isApnea = false 로 변환
+    //    record_date_data.record_data.add(List);
+    //  }
+    //}
+    //else{ //isApnea = false 라면
+    //  측정한 세 값을 어떻게 계산해서 변수에 넣음
+    //  if(값이 무호흡이라고 추측된다면){
+    //    isApnea(bool) = true 로 변환
+    //  }
+    //}
+  }
+}
 
 
 

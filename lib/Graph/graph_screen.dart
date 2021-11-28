@@ -48,43 +48,22 @@ class _GraphScreenState extends State<GraphScreen> {
   DBHelper helper = DBHelper();
 
   final GraphBloc bloc = GraphBloc();
-  final List<apneaSensing> apneaTimeRecode = [
-    apneaSensing("03:20:13", "03:20:32"),
-    apneaSensing("03:22:13", "03:23:30"),
-    apneaSensing("04:40:34", "04:40:55"),
-    apneaSensing("04:45:55", "04:46:12"),
-  ];
-
   RecordDateData test = RecordDateData(
-    date: "20211124",
+    date: "20211129",
     record: [
       RecordData(
-        startTime: "03:20:13",
-        endTime: "03:20:32",
-        oxygenSatur: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
-        heartRate: [32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13],
-        sound: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
+        startTime: "02:33:54",
+        endTime: "02:34:05",
+        oxygenSatur: [77, 77, 77, 77, 75, 76, 78, 80, 79, 79, 79, 78],
+        heartRate: [60, 60, 61, 61, 61, 61, 60, 59, 58, 58, 59, 59],
+        sound: [55, 55, 56, 57, 43, 32, 21, 10, 2, 11, 38, 49, 55]
       ),
       RecordData(
           startTime: "03:22:13",
           endTime: "03:23:30",
-          oxygenSatur: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30],
-          heartRate: [32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15],
-          sound: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
-      ),
-      RecordData(
-          startTime: "04:40:34",
-          endTime: "04:40:55",
-          oxygenSatur: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
-          heartRate: [32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13],
-          sound: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
-      ),
-      RecordData(
-          startTime: "04:45:55",
-          endTime: "04:46:12",
-          oxygenSatur: [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
-          heartRate: [32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13],
-          sound: [25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25]
+          oxygenSatur: [87, 87, 86, 86, 86, 89, 89, 88, 87, 89, 89, 89, 88, 88, 87, 87, 87, 88],
+          heartRate: [63, 64, 63, 63, 63, 63, 64, 65, 64, 66, 65, 67, 66, 65, 66, 64, 59, 60],
+          sound: [54, 58, 49, 44, 29, 13, 00, 06, 19, 35, 49, 39, 25, 11, 03, 16, 25, 49]
       ),
     ]
   );
@@ -149,14 +128,17 @@ class _GraphScreenState extends State<GraphScreen> {
     // TODO: implement initState
     super.initState();
     Map<String, dynamic> record = test.toJson();
-    String testString = json.encode(record);
-    //print(testString);
-    writeCounter(testString).then((result)=>{
-      print(result.toString())
-    });
-    readJson().then((result)=>{
-      print(result.toString())
-    });
+    // String testString = json.encode(record);
+    // writeCounter(testString).then((result)=>{
+    //   print(result.toString())
+    // });
+    // readJson().then((result)=>{
+    //   print(result.toString())
+    // });
+    // for(int i = 0; i < graphs.length; i++){
+    //   helper.insertData(graphs[i]);
+    // }
+    //helper.deleteAllDogs();
   }
 
   @override
@@ -215,8 +197,53 @@ class _GraphScreenState extends State<GraphScreen> {
 
                           int? acountValue = snapshot.data!.Acount;
 
-                          int sleepTime = startTime.compareTo(endTime);
-                          return PieGraph(time, acount);
+                          int sleepTime = endTime.difference(startTime).inHours;
+                          return Column(
+                            children: [
+                              PieGraph(sleepTime, acountValue!),
+                              SizedBox(
+                                height: 50,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Text(
+                                    '나의 평균 무호흡 감지 수',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${snapshot.data!.avgAcount}회',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: <Widget>[
+                                  Text(
+                                    '오늘 나의 평균 무호흡 감지 수',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${snapshot.data!.Acount}회',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
                         }
                         else if (snapshot.hasError) {
                           return Padding(
@@ -231,47 +258,6 @@ class _GraphScreenState extends State<GraphScreen> {
                           return CircularProgressIndicator();
                         }
                       }
-                    ),
-                    SizedBox(
-                      height: 50,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Text(
-                          '나의 평균 무호흡 감지 수',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                          ),
-                        ),
-                        Text(
-                          '2.5회',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Text(
-                          '오늘 나의 평균 무호흡 감지 수',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                          ),
-                        ),
-                        Text(
-                          '4.3회',
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
                     ),
                     FutureBuilder<RecordDateData> (
                       future: readJson(),
@@ -405,7 +391,7 @@ class _GraphScreenState extends State<GraphScreen> {
                             itemCount: snapshot.data!.length,
                             itemBuilder: (BuildContext context, int index) {
                               Graph item = snapshot.data![index];
-
+                              print('snapshot data index = ${snapshot.data!.length}');
                               //리스트의 element 들은 각각 Dismissible 로 구현됨
                               return Dismissible(
                                   key: UniqueKey(),
@@ -423,19 +409,19 @@ class _GraphScreenState extends State<GraphScreen> {
                                       Text(item.date!+'/'),
                                       Text(item.checkStart!+'/'),
                                       Text(item.checkEnd!.toString()+'/'),
-                                      Text(item.minB!.toString()+'/'),
-                                      Text(item.maxB!.toString()+'/'),
-                                      Text(item.avgB!.toString()+'/'),
-                                      Text(item.myminB!.toString()+'/'),
-                                      Text(item.mymaxB!.toString()+'/'),
-                                      Text(item.myavgB!.toString()+'/'),
-                                      Text(item.Acount!.toString()+'/'),
-                                      Text(item.avgAcount!.toString()+'/'),
-                                      Text(item.minS!.toString()+'/'),
-                                      Text(item.maxS!.toString()+'/'),
-                                      Text(item.myminS!.toString()+'/'),
-                                      Text(item.mymaxS!.toString()+'/'),
-                                      Text(item.rdi!.toString()+'/'),
+                                      // Text(item.minB!.toString()+'/'),
+                                      // Text(item.maxB!.toString()+'/'),
+                                      // Text(item.avgB!.toString()+'/'),
+                                      // Text(item.myminB!.toString()+'/'),
+                                      // Text(item.mymaxB!.toString()+'/'),
+                                      // Text(item.myavgB!.toString()+'/'),
+                                      // Text(item.Acount!.toString()+'/'),
+                                      // Text(item.avgAcount!.toString()+'/'),
+                                      // Text(item.minS!.toString()+'/'),
+                                      // Text(item.maxS!.toString()+'/'),
+                                      // Text(item.myminS!.toString()+'/'),
+                                      // Text(item.mymaxS!.toString()+'/'),
+                                      // Text(item.rdi!.toString()+'/'),
                                     ],
                                   )
                               );
@@ -698,8 +684,6 @@ class _GraphScreenState extends State<GraphScreen> {
                       //isVisible: false,
                       axisLine: const AxisLine(width: 0),
                       majorTickLines: const MajorTickLines(size: 0),
-                      minimum: 0,
-                      maximum: 50,
                     )
                 ),
                 Row(
@@ -744,19 +728,21 @@ class _GraphScreenState extends State<GraphScreen> {
 }
 
 // 샘플데이터입니다. 원하시는데로 수정하시면 됩니다
+// 전 날 기록 시작해서 다음 날로 넘어가는건 어떻게 기록해야할지 고민 => date를 저장하지 말고 checkStart와 checkEnd에 날짜를 집어넣는걸로??
+// 평균 무호흡 수, 나의 산소포화도랑 그냥 산소포화도 다른 점이 뭔지 모르겠음
 List<Graph> graphs = [
-  Graph( mac: 'aaa', date:'20211105', checkStart:'00:00:00', checkEnd:"08:30:00", minB: 10, maxB: 11, avgB: 10, myminB: 6, mymaxB: 14, myavgB:10, Acount:2, avgAcount:3, minS:92, maxS:99, myminS:91, mymaxS:100, rdi:15),
-  Graph( mac: 'aaa', date:'20211106', checkStart:'00:00:00', checkEnd:"08:30:00", minB:8, maxB:13, avgB:10, myminB: 6, mymaxB: 14, myavgB:10, Acount:3, avgAcount:3, minS:93, maxS:99, myminS:91, mymaxS:100,  rdi:20),
-  Graph( mac: 'aaa', date:'20211107', checkStart:'00:00:00', checkEnd:"08:30:00", minB:7, maxB:12, avgB:9, myminB: 6, mymaxB: 14, myavgB:10, Acount:2, avgAcount:3, minS:94, maxS:100,  myminS:91, mymaxS:100, rdi:10),
-  Graph( mac: 'aaa', date:'20211108', checkStart:'00:00:00', checkEnd:"08:30:00", minB:8, maxB:10, avgB:9, myminB: 6, mymaxB: 14, myavgB:10, Acount:2, avgAcount:3, minS:93, maxS:100,  myminS:91, mymaxS:100, rdi:10),
-  Graph( mac: 'aaa', date:'20211109', checkStart:'00:00:00', checkEnd:"08:30:00", minB:9, maxB:12, avgB:11, myminB: 6, mymaxB: 14, myavgB:10, Acount:4, avgAcount:3, minS:95, maxS:100, myminS:91, mymaxS:100,  rdi:20),
-  Graph( mac: 'aaa', date:'20211110', checkStart:'00:00:00', checkEnd:"08:30:00", minB:6, maxB:13, avgB:10, myminB: 6, mymaxB: 14, myavgB:10, Acount:5, avgAcount:3, minS:94, maxS:98, myminS:91, mymaxS:100,  rdi:40),
-  Graph( mac: 'aaa', date:'20211111', checkStart:'00:00:00', checkEnd:"08:30:00", minB:9, maxB:11, avgB:10, myminB: 6, mymaxB: 14, myavgB:10, Acount:5, avgAcount:4, minS:95, maxS:98, myminS:91, mymaxS:100,  rdi:40),
-  Graph( mac: 'aaa', date:'20211112', checkStart:'00:00:00', checkEnd:"08:30:00", minB:8, maxB:12, avgB:10, myminB: 6, mymaxB: 14, myavgB:10, Acount:3, avgAcount:4, minS:93, maxS:99, myminS:91, mymaxS:100,  rdi:15),
-  Graph( mac: 'aaa', date:'20211113', checkStart:'00:00:00', checkEnd:"08:30:00", minB:7, maxB:11, avgB:9, myminB: 6, mymaxB: 14, myavgB:10, Acount:4, avgAcount:4, minS:95, maxS:98,  myminS:91, mymaxS:100, rdi:30),
-  Graph( mac: 'aaa', date:'20211114', checkStart:'00:00:00', checkEnd:"08:30:00", minB:8, maxB:12, avgB:10, myminB: 6, mymaxB: 14, myavgB:10, Acount:2, avgAcount:4, minS:95, maxS:98, myminS:91, mymaxS:100, rdi:30),
-  Graph( mac: 'aaa', date:'20211115', checkStart:'00:00:00', checkEnd:"08:30:00", minB:9, maxB:13, avgB:11, myminB: 6, mymaxB: 14, myavgB:10, Acount:5, avgAcount:4, minS:94, maxS:97, myminS:91, mymaxS:100, rdi:40),
-  Graph( mac: 'aaa', date:'20211116', checkStart:'00:00:00', checkEnd:"08:30:00", minB:6, maxB:14, avgB:10, myminB: 6, mymaxB: 14, myavgB:10, Acount:0, avgAcount:3, minS:93, maxS:100, myminS:91, mymaxS:100, rdi:0),
+  Graph( mac: '23:23:23:23:23', date:'20211123', checkStart:'01:03:25', checkEnd:"07:28:10", minB: 13, maxB: 23, avgB: 18, myminB: 14, mymaxB: 24, myavgB: 19, Acount: 5, avgAcount: 3, minS: 93, maxS:99, myminS:93, mymaxS: 99, rdi:13),
+  Graph( mac: '24:24:24:24:24', date:'20211124', checkStart:'02:40:01', checkEnd:"07:24:53", minB: 14, maxB: 24, avgB: 19, myminB: 15, mymaxB: 25, myavgB: 20, Acount: 6, avgAcount: 3, minS: 94, maxS: 100, myminS: 94, mymaxS: 100,  rdi: 14),
+  Graph( mac: '25:25:25:25:25', date:'20211125', checkStart:'01:23:54', checkEnd:"08:30:55", minB: 15, maxB: 25, avgB: 20, myminB: 16, mymaxB: 26, myavgB: 21, Acount: 7, avgAcount: 4, minS: 95, maxS: 100,  myminS: 95, mymaxS: 100, rdi: 15),
+  Graph( mac: '26:26:26:26:26', date:'20211126', checkStart:'00:25:37', checkEnd:"08:13:24", minB: 16, maxB: 26, avgB: 21, myminB: 17, mymaxB: 27, myavgB: 22, Acount: 8, avgAcount: 4, minS: 96, maxS: 100,  myminS: 96, mymaxS: 100, rdi: 16),
+  Graph( mac: '27:27:27:27:27', date:'20211127', checkStart:'01:13:37', checkEnd:"08:30:33", minB: 17, maxB: 27, avgB: 22, myminB: 18, mymaxB: 28, myavgB: 23, Acount: 5, avgAcount: 3, minS: 97, maxS: 99, myminS: 97, mymaxS: 99,  rdi: 17),
+  Graph( mac: '28:28:28:28:28', date:'20211128', checkStart:'00:13:28', checkEnd:"06:28:35", minB: 18, maxB: 28, avgB: 23, myminB: 19, mymaxB: 29, myavgB: 24, Acount: 6, avgAcount: 3, minS: 98, maxS: 100, myminS: 98, mymaxS: 100,  rdi: 18),
+  Graph( mac: '17:17:17:17:17', date:'20211117', checkStart:'01:25:43', checkEnd:"07:48:22", minB: 19, maxB: 29, avgB: 24, myminB: 20, mymaxB: 30, myavgB: 25, Acount: 7, avgAcount: 4, minS: 94, maxS: 99, myminS: 94, mymaxS: 99,  rdi: 19),
+  Graph( mac: '18:18:18:18:18', date:'20211118', checkStart:'00:03:24', checkEnd:"08:00:07", minB: 20, maxB: 30, avgB: 25, myminB: 21, mymaxB: 31, myavgB: 26, Acount: 8, avgAcount: 4, minS: 95 , maxS: 100, myminS: 95, mymaxS: 100,  rdi: 20),
+  Graph( mac: '19:19:19:19:19', date:'20211119', checkStart:'02:33:14', checkEnd:"07:24:32", minB: 21, maxB: 31, avgB: 26, myminB: 22, mymaxB: 32, myavgB: 27, Acount: 4, avgAcount: 3, minS: 95, maxS: 99,  myminS: 95, mymaxS: 99, rdi: 21),
+  Graph( mac: '20:20:20:20:20', date:'20211120', checkStart:'01:03:21', checkEnd:"08:13:22", minB: 22, maxB: 32, avgB: 27, myminB: 23, mymaxB: 33, myavgB: 28, Acount: 5, avgAcount: 3, minS: 97, maxS: 100, myminS: 97, mymaxS: 100, rdi: 22),
+  Graph( mac: '21:21:21:21:21', date:'20211121', checkStart:'00:27:33', checkEnd:"06:28:39", minB: 23, maxB: 33, avgB: 28, myminB: 24, mymaxB: 34, myavgB: 29, Acount: 6, avgAcount: 4, minS: 98, maxS: 100, myminS: 98, mymaxS: 100, rdi: 23),
+  Graph( mac: '22:22:22:22:22', date:'20211122', checkStart:'01:03:13', checkEnd:"07:29:33", minB: 24, maxB: 34, avgB: 29, myminB: 25, mymaxB: 35, myavgB: 30, Acount: 7, avgAcount: 4, minS: 92, maxS: 100, myminS: 92, mymaxS: 100, rdi: 19),
 ];
 
 class apneaSensing {
