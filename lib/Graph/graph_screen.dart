@@ -49,21 +49,35 @@ class _GraphScreenState extends State<GraphScreen> {
 
   final GraphBloc bloc = GraphBloc();
   RecordDateData test = RecordDateData(
-    date: "20211129",
+    date: "20211128",
     record: [
       RecordData(
-        startTime: "02:33:54",
-        endTime: "02:34:05",
-        oxygenSatur: [77, 77, 77, 77, 75, 76, 78, 80, 79, 79, 79, 78],
-        heartRate: [60, 60, 61, 61, 61, 61, 60, 59, 58, 58, 59, 59],
-        sound: [55, 55, 56, 57, 43, 32, 21, 10, 2, 11, 38, 49, 55]
+        startTime: "02:20:13",
+        endTime: "03:20:32",
+        oxygenSatur: [13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],
+        heartRate: [32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13],
+        sound: [25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25]
       ),
       RecordData(
           startTime: "03:22:13",
           endTime: "03:23:30",
-          oxygenSatur: [87, 87, 86, 86, 86, 89, 89, 88, 87, 89, 89, 89, 88, 88, 87, 87, 87, 88],
-          heartRate: [63, 64, 63, 63, 63, 63, 64, 65, 64, 66, 65, 67, 66, 65, 66, 64, 59, 60],
-          sound: [54, 58, 49, 44, 29, 13, 00, 06, 19, 35, 49, 39, 25, 11, 03, 16, 25, 49]
+          oxygenSatur: [13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30],
+          heartRate: [32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15],
+          sound: [25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25]
+      ),
+      RecordData(
+          startTime: "04:40:34",
+          endTime: "04:40:55",
+          oxygenSatur: [13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],
+          heartRate: [32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13],
+          sound: [25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25]
+      ),
+      RecordData(
+          startTime: "04:45:55",
+          endTime: "04:46:12",
+          oxygenSatur: [13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32],
+          heartRate: [32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13],
+          sound: [25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25,25]
       ),
     ]
   );
@@ -103,8 +117,9 @@ class _GraphScreenState extends State<GraphScreen> {
   Future<RecordDateData> readJson() async {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path;
+    print(path);
     String current = DateFormat('yyyyMMdd').format(currentDate);
-    final File file = File('$path/recordData$current.json');
+    final File file = File('$path/recordData20211129.json');
     String contents = await file.readAsString();
     //final String contents = await rootBundle.loadString('$path/recordData$current.json');
     //String contents = await DefaultAssetBundle.of(context).loadString("$path/recordData_$current.json");
@@ -115,7 +130,6 @@ class _GraphScreenState extends State<GraphScreen> {
   Future<File> writeCounter(String data) async {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path;
-    print(path);
     String current = DateFormat('yyyyMMdd').format(currentDate);
     final File file = File('$path/recordData$current.json');
 
@@ -128,10 +142,10 @@ class _GraphScreenState extends State<GraphScreen> {
     // TODO: implement initState
     super.initState();
     Map<String, dynamic> record = test.toJson();
-    // String testString = json.encode(record);
-    // writeCounter(testString).then((result)=>{
-    //   print(result.toString())
-    // });
+    String testString = json.encode(record);
+    writeCounter(testString).then((result)=>{
+      print(result.toString())
+    });
     // readJson().then((result)=>{
     //   print(result.toString())
     // });
@@ -147,6 +161,8 @@ class _GraphScreenState extends State<GraphScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('그래프페이지'),
+        backgroundColor: const Color(0xff012061),
+        elevation: 0.0,
       ),
       body:
 
@@ -159,6 +175,16 @@ class _GraphScreenState extends State<GraphScreen> {
         ListView(
           children: [
             Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      const Color(0xff012061),
+                      const Color(0xff7030A0),
+                    ],
+                  )
+                ),
                 child: Column(
                   children: [
                     Container(
@@ -184,9 +210,13 @@ class _GraphScreenState extends State<GraphScreen> {
                             DateFormat('MM월 dd일(EEE)').format(currentDate),
                             style: TextStyle(
                               fontSize: 20,
+                              color: Colors.white,
                             ),
                         ),
                       ),
+                    ),
+                    SizedBox(
+                      height: 20,
                     ),
                     FutureBuilder<Graph>(
                       future: helper.getGraph(DateFormat('yyyyMMdd').format(currentDate)),
@@ -198,51 +228,61 @@ class _GraphScreenState extends State<GraphScreen> {
                           int? acountValue = snapshot.data!.Acount;
 
                           int sleepTime = endTime.difference(startTime).inHours;
-                          return Column(
-                            children: [
-                              PieGraph(sleepTime, acountValue!),
-                              SizedBox(
-                                height: 50,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  Text(
-                                    '나의 평균 무호흡 감지 수',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 15,
+                          return Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(32)),
+                            ),
+                            color: const Color(0xffffffff),
+                            child: Column(
+                              children: [
+                                PieGraph(sleepTime, acountValue!),
+                                SizedBox(
+                                  height: 50,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    Text(
+                                      '나의 평균 무호흡 감지 수',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '${snapshot.data!.avgAcount}회',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.black,
+                                    Text(
+                                      '${snapshot.data!.avgAcount}회',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.black,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                children: <Widget>[
-                                  Text(
-                                    '오늘 나의 평균 무호흡 감지 수',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 15,
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: <Widget>[
+                                    Text(
+                                      '오늘 나의 평균 무호흡 감지 수',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                      ),
                                     ),
-                                  ),
-                                  Text(
-                                    '${snapshot.data!.Acount}회',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Colors.black,
+                                    Text(
+                                      '${snapshot.data!.Acount}회',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.black,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                              ],
+                            ),
                           );
                         }
                         else if (snapshot.hasError) {
@@ -291,29 +331,20 @@ class _GraphScreenState extends State<GraphScreen> {
                                     children: [
                                       SizedBox(
                                         child: Container(
-                                          height: 30,
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '$index',
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 30,
-                                              ),
-
-                                              Text(
+                                          width: MediaQuery.of(context).size.width,
+                                          child: Card(
+                                            elevation: 4,
+                                            color: const Color(0xffffffff),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Text(
                                                 '${testData[index].startTime} ~ ${testData[index].endTime}',
                                                 style: TextStyle(
                                                   fontSize: 15,
                                                   color: Colors.black,
                                                 ),
                                               ),
-                                            ],
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -326,8 +357,11 @@ class _GraphScreenState extends State<GraphScreen> {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'Error: ${snapshot.error}',
-                              style: TextStyle(fontSize: 15),
+                              '데이터가 없습니다',
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.white,
+                              ),
                             ),
                           );
                         }
@@ -351,12 +385,22 @@ class _GraphScreenState extends State<GraphScreen> {
                     SizedBox(
                       height: 30,
                     ),
-                    Text(
-                      'RDI',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black,
+                    Padding(
+                      padding: const EdgeInsets.only(left : 8.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'RDI',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
+                    ),
+                    SizedBox(
+                      height: 5,
                     ),
                     FutureBuilder<List<RdiData>>(
                       future: getRDIValue(),
@@ -378,105 +422,20 @@ class _GraphScreenState extends State<GraphScreen> {
                         }
                       }
                     ),
-                    StreamBuilder(
-                      stream: bloc.graphs,
-                      //데이터는 builder 함수로 받아짐 //Snapshot : 한순간 받아진 데이터
-                      builder: (BuildContext context, AsyncSnapshot<List<Graph>> snapshot) {
-                        if (snapshot.hasData) {
-                          //snapshot 에 데이터가 있으면 List 반환
-
-                          return ListView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              Graph item = snapshot.data![index];
-                              print('snapshot data index = ${snapshot.data!.length}');
-                              //리스트의 element 들은 각각 Dismissible 로 구현됨
-                              return Dismissible(
-                                  key: UniqueKey(),
-                                  onDismissed: (direction) {
-                                    //DBHelper().deleteDog(item.id); //사라지면서 동시에 DB 에서도 사라지게
-                                    //setState(() {});
-
-                                    //bloc 형태로 변형 : 스와이프 시 deleteDog 함수 호출
-                                    bloc.deleteAll();
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(item.id!.toString()+'/'),
-                                      Text(item.mac!+'/'),
-                                      Text(item.date!+'/'),
-                                      Text(item.checkStart!+'/'),
-                                      Text(item.checkEnd!.toString()+'/'),
-                                      // Text(item.minB!.toString()+'/'),
-                                      // Text(item.maxB!.toString()+'/'),
-                                      // Text(item.avgB!.toString()+'/'),
-                                      // Text(item.myminB!.toString()+'/'),
-                                      // Text(item.mymaxB!.toString()+'/'),
-                                      // Text(item.myavgB!.toString()+'/'),
-                                      // Text(item.Acount!.toString()+'/'),
-                                      // Text(item.avgAcount!.toString()+'/'),
-                                      // Text(item.minS!.toString()+'/'),
-                                      // Text(item.maxS!.toString()+'/'),
-                                      // Text(item.myminS!.toString()+'/'),
-                                      // Text(item.mymaxS!.toString()+'/'),
-                                      // Text(item.rdi!.toString()+'/'),
-                                    ],
-                                  )
-                              );
-                            },
-                          );
-                        }
-                        else //snapshot 에 데이터가 없으면 로딩창 반환
-                        {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                        }
-                      },
-                    ),
                   ],
                 ),
             ),
           ],
         ),
-
-      //플로팅버튼(모두삭제, 하나추가)
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          FloatingActionButton(
-            child: Icon(Icons.delete),
-            onPressed: () {
-
-              bloc.deleteAll();
-            },
-          ),
-          SizedBox(height: 8),
-          FloatingActionButton(
-              child: Icon(Icons.search),
-              onPressed: (){
-                // 디폴트로 20211106 데이터가 검색되도록 해놨습니다.
-                // findGraph()안에 원하는 날짜를 넣어 사용하시면 됩니다.
-                bloc.findGraph('20211106');
-              }
-          ),
-          FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () {
-              // 샘플 데이터셋에서 랜덤하게 데이터를 선택해서 추가합니다
-              bloc.addGraph(graphs[Random().nextInt(graphs.length)]);
-            },
-          ),
-        ],
-      ),
     );
   }
 
   Widget rdiGraph(List<RdiData> rdiList){
 
-    print('graph length = ${rdiList.length}');
+    TooltipBehavior _tooltipBehavior = TooltipBehavior(
+        enable: true,
+        tooltipPosition: TooltipPosition.auto
+    );
 
     List<GraphwithColorData> rdiValueWithColor = [];
     for(int i = 0; i < rdiList.length; i++){
@@ -516,12 +475,15 @@ class _GraphScreenState extends State<GraphScreen> {
                           borderRadius: BorderRadius.all(Radius.circular(15)),
                         )
                       ],
+                      tooltipBehavior: _tooltipBehavior,
                       primaryXAxis: NumericAxis(
-                        isVisible: false,
-                        //majorGridLines: const MajorGridLines(width: 0),
+                        //isVisible: false,
+                        anchorRangeToVisiblePoints: false,
+                        majorGridLines: const MajorGridLines(width: 0),
                         edgeLabelPlacement: EdgeLabelPlacement.shift,
-                        minimum: 0,
+                        minimum: 1,
                         maximum: 31,
+                        interval: 3,
                       ),
                       primaryYAxis: NumericAxis(
                         isVisible: false,
@@ -529,26 +491,32 @@ class _GraphScreenState extends State<GraphScreen> {
                           PlotBand(
                               start: 5,
                               end: 5,
+                              dashArray: <double>[5,5],
                               borderColor: Colors.greenAccent,
-                              borderWidth: 2
+                              borderWidth: 2,
+                              text: '5',
+                              textStyle: TextStyle(color: Colors.greenAccent)
                           ),
                           PlotBand(
                               start: 15,
                               end: 15,
+                              dashArray: <double>[5,5],
                               borderColor: Colors.yellow,
-                              borderWidth: 2
+                              borderWidth: 2,
+                              text: '15',
+                              textStyle: TextStyle(color: Colors.yellow)
                           ),
                           PlotBand(
                               start: 30,
                               end: 30,
+                              dashArray: <double>[5,5],
                               borderColor: Colors.red,
-                              borderWidth: 2
+                              borderWidth: 2,
+                              text: '30',
+                              textStyle: TextStyle(color: Colors.red)
                           )
                         ],
                         axisLine: const AxisLine(width: 0),
-                        //majorTickLines: const MajorTickLines(size: 0),
-                        minimum: 0,
-                        maximum: 30,
                       )
                   )
               )
@@ -619,22 +587,25 @@ class _GraphScreenState extends State<GraphScreen> {
             SizedBox(
               height: 50,
             ),
-            RichText(
-              text: TextSpan(
-                text: '(사용자)님은\n',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 15,
-                ),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: '중도증무호흡이 의심됩니다\n',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black,
-                    ),
+            Align(
+              alignment: Alignment.center,
+              child: RichText(
+                text: TextSpan(
+                  text: '(사용자)님은\n',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 15,
                   ),
-                ],
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: '중도증무호흡이 의심됩니다\n',
+                      style: TextStyle(
+                        fontSize: 15,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
@@ -644,12 +615,15 @@ class _GraphScreenState extends State<GraphScreen> {
   }
 
   Widget recordedGraph(String start, String end, List<GraphData> list){
-    for(int i = 0; i < list.length; i++){
-      print('${list[i].x} ');
-    }
+
+    TooltipBehavior _tooltipBehavior = TooltipBehavior(
+        enable: true,
+        tooltipPosition: TooltipPosition.auto
+    );
+
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width * 0.85,
+      height: MediaQuery.of(context).size.width * 0.9,
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(
@@ -672,6 +646,7 @@ class _GraphScreenState extends State<GraphScreen> {
                           color: Color(0xff012061)
                       )
                     ],
+                    tooltipBehavior: _tooltipBehavior,
                     primaryXAxis: NumericAxis(
                       //isVisible: false,
                       majorGridLines: const MajorGridLines(width: 0),
@@ -743,6 +718,8 @@ List<Graph> graphs = [
   Graph( mac: '20:20:20:20:20', date:'20211120', checkStart:'01:03:21', checkEnd:"08:13:22", minB: 22, maxB: 32, avgB: 27, myminB: 23, mymaxB: 33, myavgB: 28, Acount: 5, avgAcount: 3, minS: 97, maxS: 100, myminS: 97, mymaxS: 100, rdi: 22),
   Graph( mac: '21:21:21:21:21', date:'20211121', checkStart:'00:27:33', checkEnd:"06:28:39", minB: 23, maxB: 33, avgB: 28, myminB: 24, mymaxB: 34, myavgB: 29, Acount: 6, avgAcount: 4, minS: 98, maxS: 100, myminS: 98, mymaxS: 100, rdi: 23),
   Graph( mac: '22:22:22:22:22', date:'20211122', checkStart:'01:03:13', checkEnd:"07:29:33", minB: 24, maxB: 34, avgB: 29, myminB: 25, mymaxB: 35, myavgB: 30, Acount: 7, avgAcount: 4, minS: 92, maxS: 100, myminS: 92, mymaxS: 100, rdi: 19),
+  Graph( mac: '29:29:29:29:29', date:'20211129', checkStart:'00:08:24', checkEnd:"09:14:33", minB: 13, maxB: 23, avgB: 18, myminB: 14, mymaxB: 24, myavgB: 19, Acount: 5, avgAcount: 3, minS: 93, maxS: 99, myminS: 93, mymaxS: 99, rdi: 13),
+  Graph( mac: '30:30:30:30:30', date:'20211130', checkStart:'02:52:33', checkEnd:"09:07:32", minB: 14, maxB: 24, avgB: 19, myminB: 15, mymaxB: 25, myavgB: 20, Acount: 6, avgAcount: 4, minS: 96, maxS: 100, myminS: 96, mymaxS: 100, rdi: 14),
 ];
 
 class apneaSensing {

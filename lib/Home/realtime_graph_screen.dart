@@ -1,28 +1,21 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_blue/flutter_blue.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_alarm/widget/oxygen_satur_chart_widget.dart' as oxygenChart;
 import 'package:smart_alarm/widget/heart_rate_chart_widget.dart' as HeartRateChart;
 import 'package:smart_alarm/widget/sound_chart_widget.dart' as SoundChart;
 
-void main(){
-  runApp(graphMeasure());
-}
 
-class graphMeasure extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: RealtimeGraph(),
-    );
-  }
-}
 
 class RealtimeGraph extends StatefulWidget {
-  const RealtimeGraph({Key? key}) : super(key: key);
+
+  const RealtimeGraph({Key? key, required this.device}) : super(key: key);
+  final BluetoothDevice device;
 
   @override
   _RealtimeGraphState createState() => _RealtimeGraphState();
@@ -33,14 +26,28 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
   StreamController<int> streamController = StreamController<int>();
   StreamController<int> streamController1 = StreamController<int>();
   StreamController<int> streamController2 = StreamController<int>();
+  StreamController<double> streamController3 = StreamController<double>();
 
-  String oneMinuteBreathAvg = "0";
-  String apneaCount = "0";
+  double bpm = 0;
+  int apnea = 1;
+  bool isApnea = false;
+  int start = 1;
+
+  var _flutterLocalNotificationsPlugin;
 
   @override
   initState(){
     Timer.periodic(const Duration(seconds: 1), updateDataSource);
     super.initState();
+    var initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettingsIOS = IOSInitializationSettings();
+
+    var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid, iOS: initializationSettingsIOS);
+
+    _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    _flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   @override
@@ -54,6 +61,39 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
         title: Text("실시간 측정 그래프"),
         backgroundColor: const Color(0xff012061),
         elevation: 0.0,
+        actions: <Widget>[
+          StreamBuilder<BluetoothDeviceState>(
+            stream: widget.device.state,
+            initialData: BluetoothDeviceState.connecting,
+            builder: (c, snapshot) {
+              VoidCallback? onPressed;
+              String text;
+              switch (snapshot.data) {
+                case BluetoothDeviceState.connected:
+                  onPressed = () => widget.device.disconnect();
+                  text = 'DISCONNECT';
+                  break;
+                case BluetoothDeviceState.disconnected:
+                  onPressed = () => widget.device.connect();
+                  text = 'CONNECT';
+                  break;
+                default:
+                  onPressed = null;
+                  text = snapshot.data.toString().substring(21).toUpperCase();
+                  break;
+              }
+              return FlatButton(
+                  onPressed: onPressed,
+                  child: Text(
+                    text,
+                    style: Theme
+                        .of(context)
+                        .primaryTextTheme
+                        .button
+                        ?.copyWith(color: Colors.white),
+                  ));
+            },
+          )],
       ),
       body: ListView(
         children: [
@@ -84,7 +124,7 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.width * 0.85,
+                    height: MediaQuery.of(context).size.width * 0.9,
                     child: Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
@@ -94,14 +134,14 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16),
                         child: StreamBuilder<int>(
-                            stream: streamController.stream,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return oxygenChart.LineChartWidget(count: snapshot.data!);
-                              } else {
-                                return CircularProgressIndicator();
-                              }
-                            },
+                          stream: streamController.stream,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return oxygenChart.LineChartWidget(count: snapshot.data!);
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -124,7 +164,7 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.width * 0.85,
+                    height: MediaQuery.of(context).size.width * 0.9,
                     child: Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
@@ -134,14 +174,14 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                       child: Padding(
                         padding: const EdgeInsets.only(top: 16),
                         child: StreamBuilder<int>(
-                            stream: streamController1.stream,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return HeartRateChart.HeartRateChartWidget(count: snapshot.data!);
-                              } else {
-                                return CircularProgressIndicator();
-                              }
-                            },
+                          stream: streamController1.stream,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return HeartRateChart.HeartRateChartWidget(count: snapshot.data!);
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -164,7 +204,7 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.width * 0.85,
+                    height: MediaQuery.of(context).size.width * 0.9,
                     child: Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
@@ -189,6 +229,42 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                   SizedBox(
                     height: 70,
                   ),
+                  Row(
+                    mainAxisAlignment:  MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: Text(
+                          '평균 심박수 값',
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: StreamBuilder<double>(
+                          stream: streamController3.stream,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return Text(
+                                '${snapshot.data!.toStringAsFixed(2)}' + '회',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              );
+                            } else {
+                              return CircularProgressIndicator();
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(
                     height: 10,
                     child: Container(color: Colors.transparent),
@@ -210,7 +286,7 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                       Padding(
                         padding: const EdgeInsets.only(right: 8),
                         child: Text(
-                          '$apneaCount' + '회',
+                          '$apnea' + '회',
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
@@ -220,6 +296,13 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                       ),
                     ],
                   ),
+                  SizedBox(
+                    height: 70,
+                  ),
+                  RaisedButton(
+                    onPressed: _showNotification,
+                    child: Text('Show Notification'),
+                  ),
                 ],
               )
           ),
@@ -228,11 +311,44 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
     );
   }
 
+  Future<void> _showNotification() async {
+    var android = AndroidNotificationDetails(
+        'your channel id', 'your channel name', 'your channel description',
+        importance: Importance.max, priority: Priority.high);
+
+    var ios = IOSNotificationDetails();
+    var detail = NotificationDetails(android: android, iOS: ios);
+
+    String currentDate = DateFormat('MM월 dd일 hh:mm:ss').format(DateTime.now());
+
+    await _flutterLocalNotificationsPlugin.show(
+      0,
+      '무호흡 기록',
+      '$currentDate부터 무호흡이 기록되었습니다',
+      detail,
+    );
+  }
+
+  double cumulativeAverage (double prevAvg, int newNumber, int listLength) {
+    double oldWeight = (listLength - 1) / listLength;
+    double newWeight = 1 / listLength;
+    return (prevAvg * oldWeight) + (newNumber * newWeight);
+  }
+
   void updateDataSource(Timer timer) {
-    int chartTime = DateTime.now().second % 30;
-    streamController.add(Random().nextInt(50) + 50);
-    streamController1.add(Random().nextInt(50) + 50);
-    streamController2.add(Random().nextInt(50) + 50);
+    int randValue = Random().nextInt(50) + 50;
+    int randValue1 = Random().nextInt(50) + 50;
+    int randValue2 = Random().nextInt(50) + 50;
+    streamController.add(randValue);
+    streamController1.add(randValue1);
+    streamController2.add(randValue2);
+    if(isApnea == true){
+
+    }
+    else{
+      bpm = cumulativeAverage(bpm, randValue1, start++);
+      streamController3.add(bpm);
+    }
     //if(isApnea = true 라면){
     //  record_data 리스트에 센서에서 받아온 값을 넣음
     //  List.add(value1, value2, value3);
@@ -248,6 +364,9 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
     //  }
     //}
   }
+}
+
+class _customAppbar {
 }
 
 

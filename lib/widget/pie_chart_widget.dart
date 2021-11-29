@@ -25,6 +25,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
       PieGraphData('Not Sleep Time', 24 - widget.time, const Color(0xff012061))
     ];
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Center(
         child: Container(
           child: SfCircularChart(

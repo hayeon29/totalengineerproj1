@@ -40,6 +40,9 @@ dependencies:
   path: ^1.8.0
   json_annotation: ^4.3.0
   provider: ^6.0.1
+  dcdg: ^4.0.0
+  fluttertoast: ^8.0.8
+  flutter_local_notifications: ^4.0.1+2
 
 dev_dependencies:
   flutter_test:

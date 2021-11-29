@@ -28,10 +28,18 @@ class SoundChartWidgetState extends State<SoundChartWidget>{
   formatDate(DateTime.now(), [hh, ':', nn, ':30',]) :
   formatDate(DateTime.now().add(const Duration(minutes: 1)), [hh, ':', nn, ':00',]);
 
+  late Timer timer;
+
   @override
   void initState() {
-    Timer.periodic(const Duration(seconds: 1), updateDataSource);
+    timer = Timer.periodic(const Duration(seconds: 1), updateDataSource);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
   }
 
   @override

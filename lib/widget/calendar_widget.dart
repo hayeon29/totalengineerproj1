@@ -24,7 +24,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           weekendDays: [7],
           daysOfWeekVisible: true,
           daysOfWeekStyle: DaysOfWeekStyle(
-            weekdayStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            weekdayStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             weekendStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
           ),
           onDaySelected: (DateTime selectDay, DateTime focusDay){
@@ -39,9 +39,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               color: Colors.black26.withOpacity(0.5),
               shape: BoxShape.circle,
             ),
-            selectedTextStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            selectedTextStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
             weekendTextStyle: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            defaultTextStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+            defaultTextStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           selectedDayPredicate: (DateTime date){
             return isSameDay(currentDate, date);
@@ -49,9 +49,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           headerStyle: HeaderStyle(
             formatButtonVisible: false,
             titleCentered: true,
-            titleTextStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-            leftChevronIcon: Icon(Icons.chevron_left, color: Colors.black),
-            rightChevronIcon: Icon(Icons.chevron_right, color: Colors.black),
+            titleTextStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            leftChevronIcon: Icon(Icons.chevron_left, color: Colors.white),
+            rightChevronIcon: Icon(Icons.chevron_right, color: Colors.white),
           ),
         ),
       )
