@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:smart_alarm/data/calendar_data.dart';
 
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({Key? key}) : super(key: key);
@@ -9,14 +10,13 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  DateTime selectedDay = DateTime.now();
+  DateTime selectedDay = currentDate;
   DateTime focusedDay = DateTime.now();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
+      backgroundColor: Colors.transparent,
       body: Container(
-        color: Colors.transparent,
         child: TableCalendar(
           firstDay: DateTime(2021, 10),
           lastDay: DateTime(DateTime.now().year, DateTime.now().month + 1),
@@ -29,7 +29,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           ),
           onDaySelected: (DateTime selectDay, DateTime focusDay){
             setState((){
-              selectedDay = selectDay;
+              currentDate = selectDay;
               focusedDay = focusDay;
             });
           },
@@ -44,7 +44,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             defaultTextStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           selectedDayPredicate: (DateTime date){
-            return isSameDay(selectedDay, date);
+            return isSameDay(currentDate, date);
           },
           headerStyle: HeaderStyle(
             formatButtonVisible: false,

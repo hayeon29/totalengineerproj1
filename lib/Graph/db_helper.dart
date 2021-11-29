@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -43,6 +44,14 @@ class DBHelper {
     );
   }
 
+  Future<List<RdiData>> getRDIData(String month) async{
+    final db = await database;
+    var res = await db.rawQuery('SELECT substr(date, 7, 2) AS day, rdi FROM $TableName WHERE substr(date, 5, 2) = ?', [month]);
+    List<RdiData> rdiValueList = res.isNotEmpty ? res.map((c) => RdiData(date: c['day'] as String, rdiValue: c['rdi'] as int)).toList() : [];
+
+    return rdiValueList;
+  }
+
   //Create
   insertData(Graph graph) async {
     final db = await database;
@@ -60,7 +69,7 @@ class DBHelper {
   }
 
   //Read
-  getGraph(String date) async {
+  Future<Graph> getGraph(String date) async {
     final db = await database;
     var res = await db.rawQuery(
       'SELECT * FROM $TableName WHERE date = ?', [date]
@@ -68,7 +77,10 @@ class DBHelper {
     return res.isNotEmpty ? Graph(id: res.first['id'] as int, mac: res.first['mac'] as String, date:res.first['date'] as String, checkStart:res.first['checkStart'] as String, checkEnd:res.first['checkEnd'] as String,
         minB: res.first['minB']as int, maxB: res.first['maxB']as int, avgB: res.first['avgB']as int, myminB: res.first['myminB']as int, mymaxB: res.first['mymaxB']as int,
         myavgB:res.first['myavgB']as int, Acount: res.first['Acount']as int, avgAcount: res.first['avgAcount']as int, minS: res.first['minS']as int, maxS: res.first['maxS']as int,
-        myminS:res.first['myminS']as int, mymaxS:res.first['mymaxS']as int, rdi:res.first['rdi']as int): Null;
+        myminS:res.first['myminS']as int, mymaxS:res.first['mymaxS']as int, rdi:res.first['rdi']as int):
+        Graph(id: 0, mac: '0', date: '20211127', checkStart: '00:00:00', checkEnd: '00:00:00',
+            minB: 0, maxB: 0, avgB: 0, myminB: 0, mymaxB: 0, myavgB: 0, Acount: 0, avgAcount: 0,
+            minS: 0, maxS: 0, myminS: 0, mymaxS: 0, rdi: 0);
   }
 
   //ReadAll
@@ -105,4 +117,11 @@ class DBHelper {
     final db = await database;
     db.rawDelete('DELETE FROM $TableName');
   }
+}
+
+class RdiData{
+  final String? date;
+  final int? rdiValue;
+
+  RdiData({this.date, this.rdiValue});
 }
