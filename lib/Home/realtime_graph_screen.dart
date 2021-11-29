@@ -247,7 +247,7 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(right: 8),
+                        padding: const EdgeInsets.only(right: 8, bottom: 20),
                         child: Text(
                           '$apneaCount' + '회',
                           style: const TextStyle(
