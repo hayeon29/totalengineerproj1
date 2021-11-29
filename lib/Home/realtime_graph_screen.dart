@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 import 'package:smart_alarm/widget/oxygen_satur_chart_widget.dart' as oxygenChart;
 import 'package:smart_alarm/widget/heart_rate_chart_widget.dart' as HeartRateChart;
 import 'package:smart_alarm/widget/sound_chart_widget.dart' as SoundChart;
@@ -16,14 +17,13 @@ class graphMeasure extends StatelessWidget{
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: RealtimeGraph(),
     );
   }
 }
 
 class RealtimeGraph extends StatefulWidget {
-  const RealtimeGraph({Key? key}) : super(key: key);
-
+  const RealtimeGraph({Key? key, required this.device}) : super(key: key);
+  final BluetoothDevice device;
   @override
   _RealtimeGraphState createState() => _RealtimeGraphState();
 }
@@ -54,6 +54,39 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
         title: Text("실시간 측정 그래프"),
         backgroundColor: const Color(0xff012061),
         elevation: 0.0,
+        actions: <Widget>[
+          StreamBuilder<BluetoothDeviceState>(
+            stream: widget.device.state,
+            initialData: BluetoothDeviceState.connecting,
+            builder: (c, snapshot) {
+              VoidCallback? onPressed;
+              String text;
+              switch (snapshot.data) {
+                case BluetoothDeviceState.connected:
+                  onPressed = () => widget.device.disconnect();
+                  text = 'DISCONNECT';
+                  break;
+                case BluetoothDeviceState.disconnected:
+                  onPressed = () => widget.device.connect();
+                  text = 'CONNECT';
+                  break;
+                default:
+                  onPressed = null;
+                  text = snapshot.data.toString().substring(21).toUpperCase();
+                  break;
+              }
+              return FlatButton(
+                  onPressed: onPressed,
+                  child: Text(
+                    text,
+                    style: Theme.of(context)
+                        .primaryTextTheme
+                        .button
+                        ?.copyWith(color: Colors.white),
+                  ));
+            },
+          )
+        ],
       ),
       body: ListView(
         children: [
