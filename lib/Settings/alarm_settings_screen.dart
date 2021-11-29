@@ -67,6 +67,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
           children: <Widget>[
             SwitchListTile(
               title: Text('진동 알림'),
+                dense: true,
                 subtitle: Text('수면 중 무호흡 시 푸시알림을 전송합니다'),
                 value: _vibrateAlarm,
                 onChanged: (bool value) {
@@ -77,6 +78,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
             ),
             SwitchListTile(
               title: Text('소리 알림'),
+                dense: true,
                 subtitle: Text('수면 중 위급한 상황에 소리알림을 사용합니다'),
                 value: _soundAlarm,
                 onChanged: (bool value) {
@@ -87,6 +89,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
             ),
             SwitchListTile(
               title: Text('SMS 알림'),
+                dense: true,
                 subtitle: Text('위급상황 시 보호자 및 응급시설에 SMS를 전송합니다'),
                 value: _smsAlarm,
                 onChanged: (bool value) {
@@ -95,7 +98,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                   });
                 }
             ),
-            Text('진동알림: $_vibrateAlarm, 소리알림: $_soundAlarm, SMS알림: $_smsAlarm')
+            //Text('진동알림: $_vibrateAlarm, 소리알림: $_soundAlarm, SMS알림: $_smsAlarm')
           ],
 
         ),

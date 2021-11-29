@@ -249,6 +249,3 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
     //}
   }
 }
-
-
-
