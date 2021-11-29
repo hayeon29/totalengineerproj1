@@ -117,11 +117,11 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.width * 0.85,
+                    height: MediaQuery.of(context).size.width,
                     child: Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(32), topRight: Radius.circular(32)),
+                        borderRadius: BorderRadius.all(Radius.circular(32)),
                       ),
                       color: const Color(0xffffffff),
                       child: Padding(
@@ -132,7 +132,9 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                               if (snapshot.hasData) {
                                 return oxygenChart.LineChartWidget(count: snapshot.data!);
                               } else {
-                                return CircularProgressIndicator();
+                                return CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                );
                               }
                             },
                         ),
@@ -143,6 +145,8 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                     height: 50,
                     child: Container(color: Colors.transparent),
                   ),
+
+
                   // 2. 심박수
                   Padding(
                     padding: const EdgeInsets.only(left: 8),
@@ -157,11 +161,11 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.width * 0.85,
+                    height: MediaQuery.of(context).size.width,
                     child: Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(32), topRight: Radius.circular(32)),
+                        borderRadius: BorderRadius.all(Radius.circular(32)),
                       ),
                       color: const Color(0xffffffff),
                       child: Padding(
@@ -183,6 +187,8 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                     height: 50,
                     child: Container(color: Colors.transparent),
                   ),
+
+
                   //3. 소리
                   Padding(
                     padding: const EdgeInsets.only(left: 8),
@@ -197,11 +203,11 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                   ),
                   Container(
                     width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.width * 0.85,
+                    height: MediaQuery.of(context).size.width,
                     child: Card(
                       elevation: 4,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(32), topRight: Radius.circular(32)),
+                        borderRadius: BorderRadius.all(Radius.circular(32)),
                       ),
                       color: const Color(0xffffffff),
                       child: Padding(
@@ -263,9 +269,9 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
 
   void updateDataSource(Timer timer) {
     int chartTime = DateTime.now().second % 30;
-    streamController.add(Random().nextInt(50) + 50);
-    streamController1.add(Random().nextInt(50) + 50);
-    streamController2.add(Random().nextInt(50) + 50);
+    streamController.add(Random().nextInt(5) + 95);
+    streamController1.add(Random().nextInt(20) + 60);
+    streamController2.add(Random().nextInt(20) + 0);
     //if(isApnea = true 라면){
     //  record_data 리스트에 센서에서 받아온 값을 넣음
     //  List.add(value1, value2, value3);

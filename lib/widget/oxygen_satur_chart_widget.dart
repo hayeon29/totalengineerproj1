@@ -62,7 +62,7 @@ class LineChartWidgetState extends State<LineChartWidget>{
                 maximum: 29,
               ),
               primaryYAxis: NumericAxis(
-                isVisible: false,
+                isVisible: true,
                 axisLine: const AxisLine(width: 0),
                 majorTickLines: const MajorTickLines(size: 0),
                 minimum: 50,

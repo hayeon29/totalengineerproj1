@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_alarm/Settings/theme_settings_screen.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:smart_alarm/data/bar_chart_data.dart';
 
@@ -62,11 +63,11 @@ class HeartRateChartWidgetState extends State<HeartRateChartWidget>{
                 maximum: 29,
               ),
               primaryYAxis: NumericAxis(
-                isVisible: false,
+                isVisible: true,
                 axisLine: const AxisLine(width: 0),
                 majorTickLines: const MajorTickLines(size: 0),
-                minimum: 50,
-                maximum: 100,
+                minimum: 40,
+                maximum: 150,
               )
           ),
           Row(

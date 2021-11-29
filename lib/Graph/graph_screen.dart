@@ -128,17 +128,17 @@ class _GraphScreenState extends State<GraphScreen> {
     // TODO: implement initState
     super.initState();
     Map<String, dynamic> record = test.toJson();
-    // String testString = json.encode(record);
-    // writeCounter(testString).then((result)=>{
-    //   print(result.toString())
-    // });
-    // readJson().then((result)=>{
-    //   print(result.toString())
-    // });
-    // for(int i = 0; i < graphs.length; i++){
-    //   helper.insertData(graphs[i]);
-    // }
-    //helper.deleteAllDogs();
+    String testString = json.encode(record);
+    writeCounter(testString).then((result)=>{
+      print(result.toString())
+    });
+    readJson().then((result)=>{
+      print(result.toString())
+    });
+    for(int i = 0; i < graphs.length; i++){
+      helper.insertData(graphs[i]);
+    }
+    helper.deleteAllDogs();
   }
 
   @override
@@ -443,6 +443,7 @@ class _GraphScreenState extends State<GraphScreen> {
         ),
 
       //플로팅버튼(모두삭제, 하나추가)
+      /*
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -469,8 +470,7 @@ class _GraphScreenState extends State<GraphScreen> {
               bloc.addGraph(graphs[Random().nextInt(graphs.length)]);
             },
           ),
-        ],
-      ),
+        ],*/
     );
   }
 
@@ -628,7 +628,7 @@ class _GraphScreenState extends State<GraphScreen> {
                 ),
                 children: <TextSpan>[
                   TextSpan(
-                    text: '중도증무호흡이 의심됩니다\n',
+                    text: '무호흡 증후군 정도\n',
                     style: TextStyle(
                       fontSize: 15,
                       color: Colors.black,
@@ -648,8 +648,8 @@ class _GraphScreenState extends State<GraphScreen> {
       print('${list[i].x} ');
     }
     return Container(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width * 0.85,
+      width: MediaQuery.of(context).size.width * 0.8,
+      height: MediaQuery.of(context).size.width * 0.8,
       child: Card(
         elevation: 4,
         shape: RoundedRectangleBorder(
