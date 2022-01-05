@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:smart_alarm/Graph/db_helper.dart';
 import 'package:smart_alarm/data/bar_chart_data.dart';
 import 'package:smart_alarm/data/record_data.dart';
@@ -119,7 +118,7 @@ class _GraphScreenState extends State<GraphScreen> {
     String path = directory.path;
     print(path);
     String current = DateFormat('yyyyMMdd').format(currentDate);
-    final File file = File('$path/recordData20211129.json');
+    final File file = File('$path/recordData${current}.json');
     String contents = await file.readAsString();
     //final String contents = await rootBundle.loadString('$path/recordData$current.json');
     //String contents = await DefaultAssetBundle.of(context).loadString("$path/recordData_$current.json");
@@ -130,6 +129,7 @@ class _GraphScreenState extends State<GraphScreen> {
   Future<File> writeCounter(String data) async {
     Directory directory = await getApplicationDocumentsDirectory();
     String path = directory.path;
+    print(path);
     String current = DateFormat('yyyyMMdd').format(currentDate);
     final File file = File('$path/recordData$current.json');
 
@@ -146,12 +146,12 @@ class _GraphScreenState extends State<GraphScreen> {
     writeCounter(testString).then((result)=>{
       print(result.toString())
     });
-    // readJson().then((result)=>{
-    //   print(result.toString())
-    // });
-    // for(int i = 0; i < graphs.length; i++){
-    //   helper.insertData(graphs[i]);
-    // }
+    readJson().then((result)=>{
+      print(result.toString())
+    });
+    for(int i = 0; i < graphs.length; i++){
+      helper.insertData(graphs[i]);
+    }
     //helper.deleteAllDogs();
   }
 

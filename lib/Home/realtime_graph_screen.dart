@@ -35,9 +35,10 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
 
   var _flutterLocalNotificationsPlugin;
 
+  late Timer timer;
+
   @override
   initState(){
-    Timer.periodic(const Duration(seconds: 1), updateDataSource);
     super.initState();
     var initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -48,6 +49,14 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
 
     _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
+
+  @override
+  void dispose() {
+    if(timer.isActive){
+      timer.cancel();
+    }
+    super.dispose();
   }
 
   @override
@@ -302,6 +311,21 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
                   RaisedButton(
                     onPressed: _showNotification,
                     child: Text('Show Notification'),
+                  ),
+                  RaisedButton(
+                    onPressed: (){
+                      timer = Timer.periodic(const Duration(seconds: 1), updateDataSource);
+                    },
+                    child: Text('측정 시작'),
+                  ),
+                  RaisedButton(
+                    onPressed: (){
+                      timer.cancel();
+                      streamController.close();
+                      streamController1.close();
+                      streamController2.close();
+                    },
+                    child: Text('측정 종료'),
                   ),
                 ],
               )
