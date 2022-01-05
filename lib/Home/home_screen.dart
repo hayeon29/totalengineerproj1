@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:smart_alarm/Home/realtime_graph_screen.dart';
 
-import 'ble_settings_screen.dart';
+import 'device_screen.dart';
 
 
 class HomeScreen extends StatefulWidget {

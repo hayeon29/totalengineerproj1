@@ -11,12 +11,9 @@ import 'package:smart_alarm/widget/heart_rate_chart_widget.dart' as HeartRateCha
 import 'package:smart_alarm/widget/sound_chart_widget.dart' as SoundChart;
 
 
-
 class RealtimeGraph extends StatefulWidget {
-
   const RealtimeGraph({Key? key, required this.device}) : super(key: key);
   final BluetoothDevice device;
-
   @override
   _RealtimeGraphState createState() => _RealtimeGraphState();
 }
@@ -392,6 +389,5 @@ class _RealtimeGraphState extends State<RealtimeGraph> {
 
 class _customAppbar {
 }
-
 
 
